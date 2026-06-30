@@ -1,0 +1,7 @@
+import axios from "axios"
+import { api } from "./registerApi"
+
+export const createClassroom = (data) => api.post("/classroom", data);
+export const getClassroom = () => api.get("/classroom");
+
+export const getClassroomById = (ClassroomId) => api.get(`/classroom/${ClassroomId}`)
