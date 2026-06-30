@@ -55,9 +55,11 @@ function AddStudentToClassroom({ ClassroomId }) {
     const addStudent = async () => {
         try {
             const res = await addStudentInC({ StudentId: selectedStudent, ClassroomId: parseInt(ClassroomId) });
+            
             setAddMessage(res.data.message)
         } catch (err) {
-            console.log(err)
+            console.log(err.response.data.message)
+            setAddMessage(err.response.data.message)
         }
     }
     return (

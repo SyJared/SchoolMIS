@@ -12,8 +12,17 @@ public class ClassroomStudentService
         _context = context;
     }
 
-    public async Task<ClassroomStudents>InsertStudent(ClassroomStudentsDto dto)
+    public async Task<ClassroomStudents?>InsertStudent(ClassroomStudentsDto dto)
     {
+        var existing = await _context.ClassroomsStudents
+            .FirstOrDefaultAsync(cs =>
+            cs.StudentId == dto.StudentId &&
+            cs.ClassroomId == dto.ClassroomId);
+
+        if (existing != null)
+        {
+            return null;
+        }
         var newstud = new ClassroomStudents
         {
             StudentId = dto.StudentId,

@@ -1,5 +1,6 @@
 ﻿using Dtos;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.VisualBasic;
 
 namespace backend.Controllers
 {
@@ -20,6 +21,13 @@ namespace backend.Controllers
         public async Task<IActionResult>InsertIntoClassroomStudent(ClassroomStudentsDto dto)
         {
             var student = await _classroomStudentService.InsertStudent(dto);
+            if(student == null)
+            {
+                return Conflict(new
+                {
+                    message = "Student already in the classroom"
+                });
+            }
             return Ok(new
             {
                 student,
