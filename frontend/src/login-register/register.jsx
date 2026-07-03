@@ -8,17 +8,19 @@ function Register() {
     const [password, setPassword] = useState();
     const [name, setName] = useState();
     const navigate = useNavigate()
+    const [message, setMessage] = useState();
     const handleRegister = async (e) => {
         e.preventDefault()
         try {
-            await register({
+            const res =await register({
                 Email: email,
                 Name: name,
                 Password: password
             })
+
             navigate("/")
-        } catch(err) {
-            console.log(err)
+        } catch (err) {
+            setMessage(err.response.data)
         }
     }
     return (
@@ -29,6 +31,7 @@ function Register() {
                 <input type="text" value={name} onChange={(e) => setName(e.target.value)} />
                 <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
                 <button>Register</button>
+                {message && (<p>{message}</p>)}
             </form>
         </div>
     )

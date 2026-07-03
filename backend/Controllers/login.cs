@@ -3,6 +3,7 @@ using Dtos;
 using Microsoft.AspNetCore.Mvc;
 using model;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 namespace backend.Controllers
 {
     [ApiController]
@@ -10,7 +11,7 @@ namespace backend.Controllers
     public class LoginController : ControllerBase
     {
         private readonly AppDbContext _context;
-
+        private readonly PasswordHasher<Users> _passwordHasher = new();
         public LoginController(AppDbContext context)
         {
             _context = context;
@@ -27,9 +28,10 @@ namespace backend.Controllers
                 return NotFound(new {message="Incorrect Email"});
             }
 
-            if (user.Password != dto.Password)
+            var result = _passwordHasher.VerifyHashedPassword(user, user.Password, dto.Password);
+            if(result == PasswordVerificationResult.Failed)
             {
-                return Unauthorized(new {Message= "Incorrect password." });
+                return BadRequest(new { message = "Incorrect Password" });
             }
 
             return Ok(new
