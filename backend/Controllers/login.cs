@@ -12,9 +12,11 @@ namespace backend.Controllers
     {
         private readonly AppDbContext _context;
         private readonly PasswordHasher<Users> _passwordHasher = new();
-        public LoginController(AppDbContext context)
+        private readonly JwtService _jwtService;
+        public LoginController(AppDbContext context, JwtService jwtService)
         {
             _context = context;
+            _jwtService = jwtService;
         }
 
         [HttpPost]
@@ -33,12 +35,12 @@ namespace backend.Controllers
             {
                 return BadRequest(new { message = "Incorrect Password" });
             }
+            var token = _jwtService.GenerateToken(user);
 
             return Ok(new
             {
                 Message = "Login successful",
-                user.Id,
-                user.Email
+                token
             });
         }
     }

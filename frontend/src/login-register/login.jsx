@@ -15,10 +15,11 @@ function Login() {
         e.preventDefault()
         try {
             console.log(email,password)
-            await login({
+            const res = await login({
                 Email: email,
                 Password: password
             })
+            localStorage.setItem("token", res.data.token);
             navigate("/classroom")
         } catch (err) {
             setError(err.response.data.message)
