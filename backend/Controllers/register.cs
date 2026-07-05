@@ -1,5 +1,6 @@
 using backend.Data;
 using Dtos;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -17,7 +18,7 @@ namespace backend.Controllers
         {
             _context = context;
         }
-
+        [AllowAnonymous]
         [HttpPost]
 
         public async Task<IActionResult> CreateRegister(RegisterDto dto)

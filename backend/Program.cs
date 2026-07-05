@@ -48,22 +48,19 @@ builder.Services.AddScoped<ClassroomService>();
 builder.Services.AddScoped<StudentService>();
 builder.Services.AddScoped<ClassroomStudentService>();
 builder.Services.AddScoped<JwtService>();
+builder.Services.AddScoped<ClassService>();
 
 var app = builder.Build();
+app.UseHttpsRedirection();
 app.UseCors("ReactPolicy");
 app.UseAuthentication();
 app.UseAuthorization();
+app.MapControllers();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
 }
-
-app.UseHttpsRedirection();
-
-app.UseAuthorization();
-
-app.MapControllers();
 
 app.Run();

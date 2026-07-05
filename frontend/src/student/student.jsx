@@ -31,8 +31,9 @@ function Student() {
         try {
 
             const res = await createStudents({ name });
-
-            setStudents((s) => [...s, {id: res.id, name: res.name}])
+            console.log(res)
+            setStudents((s) => [...s, { id: res.data.id, name: res.data.name }])
+            setName("")
         } catch (err) {
             console.log(err)
         }

@@ -4,6 +4,7 @@ import "./index.css";
 import Login from "./login-register/login";
 import Register from "./login-register/register";
 import Student from "./student/student.jsx"
+import Header from "./header/header.jsx";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 function App() {
 
@@ -11,6 +12,7 @@ function App() {
   return (
       <>
           <BrowserRouter>
+              <Header />
               <Routes>
                   <Route path="/students" element={<Student />} />
                   <Route path="/" element={<Login />} />

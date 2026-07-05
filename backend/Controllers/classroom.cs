@@ -3,6 +3,7 @@ using Dtos;
 using model;
 using backend.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 
 namespace backend.Controllers
@@ -16,12 +17,12 @@ namespace backend.Controllers
         {
             _classroomService = classroomService;
         }
-
-        [HttpPost]
+        [Authorize(Roles = "Admin")]
+        [HttpPost]  
 
         public async Task<IActionResult> CreateClassroom(CreateClassroomDto dto)
         {
-           var user = _classroomService.CreateClassroom(dto);
+           var user = await _classroomService.CreateClassroom(dto);
 
             return Ok(new
             {
@@ -29,7 +30,7 @@ namespace backend.Controllers
                 Message = "Classroom created"
             });
         }
-
+        [Authorize]
         [HttpGet]
         public async Task<IActionResult> GetClassroom()
         {
@@ -41,7 +42,7 @@ namespace backend.Controllers
                 message = "classroom retrieved"
             });
         }
-
+        [Authorize]
         [HttpGet("{ClassroomId}")]
         public async Task<IActionResult> GetClassroomById(int ClassroomId)
         {

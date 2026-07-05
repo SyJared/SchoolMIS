@@ -2,6 +2,7 @@
 using backend.Model;
 using Microsoft.EntityFrameworkCore;
 using model;
+using Model;
 
 namespace backend.Data
 {
@@ -15,5 +16,7 @@ namespace backend.Data
         public DbSet<Classroom> Classrooms { get; set; }
 
         public DbSet<ClassroomStudents> ClassroomsStudents { get; set; }
+
+        public DbSet<Classes> Classes { get; set; }
     }
 }

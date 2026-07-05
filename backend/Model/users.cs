@@ -11,7 +11,6 @@ public class Users
 }
 public enum Role
 {
-    Student,
-    Teacher,
-    Admin
+    Teacher = 1,
+    Admin = 2
 }

@@ -14,12 +14,13 @@ function Login() {
     const handleLogin = async (e) => {
         e.preventDefault()
         try {
-            console.log(email,password)
+
             const res = await login({
                 Email: email,
                 Password: password
             })
             localStorage.setItem("token", res.data.token);
+            console.log(res)
             navigate("/classroom")
         } catch (err) {
             setError(err.response.data.message)

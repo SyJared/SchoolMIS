@@ -1,4 +1,5 @@
 ﻿using Dtos;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualBasic;
 
@@ -15,7 +16,7 @@ namespace backend.Controllers
         {
             _classroomStudentService = classroomStudentService;
         }
-
+        [Authorize(Roles = "Admin,Teacher")]
         [HttpPost]
 
         public async Task<IActionResult>InsertIntoClassroomStudent(ClassroomStudentsDto dto)
@@ -34,7 +35,7 @@ namespace backend.Controllers
                 message = "Insert Successful"
             });
         }
-
+        [AllowAnonymous]
         [HttpGet("{classroomId}")]
 
         public async Task<IActionResult>GetStudentOfClassroom(int classroomId)

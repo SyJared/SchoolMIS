@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 using model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
+using System;
+using Microsoft.AspNetCore.Authorization;
 namespace backend.Controllers
 {
     [ApiController]
@@ -18,7 +20,7 @@ namespace backend.Controllers
             _context = context;
             _jwtService = jwtService;
         }
-
+        [AllowAnonymous]
         [HttpPost]
         public async Task<IActionResult> Login(LoginDto dto)
         {
@@ -35,11 +37,13 @@ namespace backend.Controllers
             {
                 return BadRequest(new { message = "Incorrect Password" });
             }
+            Console.WriteLine("tokeeen", user.Role?.ToString());
             var token = _jwtService.GenerateToken(user);
 
             return Ok(new
             {
                 Message = "Login successful",
+                role = user.Role?.ToString(),
                 token
             });
         }
