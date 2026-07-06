@@ -1,5 +1,6 @@
     import { useEffect, useState } from "react";
     import { createClass, getAllClass } from "../api/classApi";
+import AttendanceChecklist from "./attendanceChecklist";
 
 
     function CreateClass({ ClassroomId }) {
@@ -7,6 +8,8 @@
         const [end, setEnd] = useState('');
         const [loading, setLoading] = useState(true);
         const [classes, setClasses] = useState([]);
+
+        const [open, setOpen] = useState(null);
 
         useEffect(() => {
             const fetchClass = async () => {
@@ -35,7 +38,7 @@
         const classRender = (classes) => {
             return classes.map((c) => {
                 return (
-                    <div key={c.id}>
+                    <div key={c.id} onClick={() => setOpen(c.id)}>
                         <h1>{ c.isDone ?"Class ended" : "Please be ready for the class"}</h1>
                         <span>Start :{c.start}</span>
                         <span>End :{c.end}</span>
@@ -56,6 +59,7 @@
                 <div>
                     {!loading && classRender(classes)}
                 </div>
+                {<AttendanceChecklist open={open} onClose={() => setOpen(null)} />}
             </div>
         )
     }

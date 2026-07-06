@@ -43,6 +43,9 @@ builder.Services.AddOpenApi();
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+        options.JsonSerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter()));
 
 builder.Services.AddScoped<ClassroomService>();
 builder.Services.AddScoped<StudentService>();
@@ -50,6 +53,7 @@ builder.Services.AddScoped<ClassroomStudentService>();
 builder.Services.AddScoped<JwtService>();
 builder.Services.AddScoped<ClassService>();
 builder.Services.AddScoped<TeacherService>();
+builder.Services.AddScoped<AttendanceService>();
 
 var app = builder.Build();
 app.UseHttpsRedirection();
