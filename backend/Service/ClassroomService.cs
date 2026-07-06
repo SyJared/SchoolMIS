@@ -34,4 +34,16 @@ public class ClassroomService
     {
         return await _context.Classrooms.FindAsync(ClassroomId);
     }
+    public async Task<Classroom>DeleteClassroomById(int ClassroomId)
+    {
+        var classroom = await _context.Classrooms.FindAsync(ClassroomId);
+        if(classroom == null)
+        {
+            Console.WriteLine($"Classroom with ID {ClassroomId} not found.");
+            return null;
+        }
+        _context.Classrooms.Remove(classroom);
+        await _context.SaveChangesAsync();
+        return classroom;
+    }
 }

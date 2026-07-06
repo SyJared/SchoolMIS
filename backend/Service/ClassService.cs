@@ -1,5 +1,6 @@
 using backend.Data;
 using Dtos;
+using Microsoft.EntityFrameworkCore;
 using Model;
 
 public class ClassService
@@ -22,5 +23,10 @@ public class ClassService
         _context.Classes.Add(newClass);
         await _context.SaveChangesAsync();
         return newClass;
+    }
+    public async Task<List<Classes>> GetAllClass()
+    {
+        var classes = await _context.Classes.ToListAsync();
+        return classes;
     }
 }

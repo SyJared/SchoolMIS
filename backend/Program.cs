@@ -49,6 +49,7 @@ builder.Services.AddScoped<StudentService>();
 builder.Services.AddScoped<ClassroomStudentService>();
 builder.Services.AddScoped<JwtService>();
 builder.Services.AddScoped<ClassService>();
+builder.Services.AddScoped<TeacherService>();
 
 var app = builder.Build();
 app.UseHttpsRedirection();

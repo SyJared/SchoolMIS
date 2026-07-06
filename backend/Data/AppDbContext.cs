@@ -6,6 +6,7 @@ using Model;
 
 namespace backend.Data
 {
+    
     public class AppDbContext : DbContext
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
@@ -18,5 +19,16 @@ namespace backend.Data
         public DbSet<ClassroomStudents> ClassroomsStudents { get; set; }
 
         public DbSet<Classes> Classes { get; set; }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Classes>()
+                .Property(c => c.Start)
+                .HasColumnType("timestamp without time zone");
+
+            modelBuilder.Entity<Classes>()
+                .Property(c => c.End)
+                .HasColumnType("timestamp without time zone");
+            base.OnModelCreating(modelBuilder);
+        }
     }
 }

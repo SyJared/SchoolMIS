@@ -49,5 +49,12 @@ namespace backend.Controllers
             var classroom = await _classroomService.GetClassroomById(ClassroomId);
             return Ok(classroom);
         }
+        [Authorize(Roles ="Admin")]
+        [HttpDelete("{ClassroomId}")]
+        public async Task<IActionResult>DeleteClassroom(int ClassroomId)
+        {
+            var classroom = await _classroomService.DeleteClassroomById(ClassroomId);
+            return Ok();
+        }
     }
 }
