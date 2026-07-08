@@ -6,8 +6,10 @@ import Register from "./login-register/register";
 import Student from "./student/student.jsx"
 import Header from "./header/header.jsx";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { useAuth } from "./context/authContext";
+import StudentPage from "./studentPage/studentPage";
 function App() {
-
+    const { user } = useAuth();
 
   return (
       <>
@@ -19,7 +21,9 @@ function App() {
                   <Route path="/register" element={<Register />} />
                   <Route path="/classroom" element={<Classroom />} />
                   <Route path="/classroom/:ClassroomId" element={<ClassroomDetails />} />
-
+                  {user?.role === "Student" && (
+                      <Route path="/studentPage" element={<StudentPage />} />
+                  ) }
               </Routes>
           </BrowserRouter>
     </>

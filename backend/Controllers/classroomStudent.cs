@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualBasic;
+using System.Security.Claims;
 
 namespace backend.Controllers
 {
@@ -42,6 +43,16 @@ namespace backend.Controllers
         {
             var students = await _classroomStudentService.GetStudentOfClassroom(classroomId);
             return Ok(students);
+        }
+        [Authorize(Roles ="Student")]
+        [HttpGet("my")]
+        public async Task<IActionResult>getClassrooms()
+        {
+            var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+
+            var classrooms = await _classroomStudentService.GetMyClassroom(userId);
+
+            return Ok(classrooms);
         }
     }
 }

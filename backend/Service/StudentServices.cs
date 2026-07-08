@@ -1,14 +1,15 @@
 using backend.Data;
 using Dtos;
-using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using model;
 
 public class StudentService
 {
     private readonly AppDbContext _context;
+    private readonly PasswordHasher<Users> _passwordHasher = new();
 
-    public StudentService (AppDbContext context)
+    public StudentService(AppDbContext context)
     {
         _context = context;
     }
@@ -21,41 +22,77 @@ public class StudentService
         {
             query = query.Where(s => s.Name.Contains(search));
         }
+
         return await query.ToListAsync();
     }
 
-    public async Task<Student>CreateStudent (CreateStudentDto dto)
+    private Users CreateUser(CreateStudentDto dto)
     {
-        var newStudent = new Student
+        return new Users
         {
             Name = dto.Name,
+            Email = dto.Email,
+            Password = _passwordHasher.HashPassword(null, dto.Password),
+            Role = Role.Student
         };
-        _context.Students.Add(newStudent);
+    }
+
+    public async Task<Student> CreateStudent(CreateStudentDto dto)
+    {
+        var user = CreateUser(dto);
+
+        var student = new Student
+        {
+            Name = dto.Name,
+            User = user
+        };
+
+        _context.Students.Add(student);
+
         await _context.SaveChangesAsync();
 
-        return newStudent;
+        return student;
     }
-    public async Task<Student?>EditStudent(int Id, EditStudentDto dto)
+
+    public async Task<Student?> EditStudent(int id, EditStudentDto dto)
     {
-        var existing = await _context.Students.FindAsync(Id);
-        if (existing == null)
-        {
+        var student = await _context.Students
+            .Include(s => s.User)
+            .FirstOrDefaultAsync(s => s.Id == id);
+
+        if (student == null)
             return null;
-        };
-        existing.Name = dto.Name;
-        await _context.SaveChangesAsync();
-        return existing;
-    }
-    public async Task<Student?>DeleteStudent(int Id)
-    {
-        var studentr = await _context.Students.FindAsync(Id);
-        if (studentr == null)
+
+        student.Name = dto.Name;
+
+        if (student.User != null)
         {
-            return null;
+            student.User.Name = dto.Name;
         }
-        _context.Students.Remove(studentr);
+
         await _context.SaveChangesAsync();
-        return studentr;
+
+        return student;
     }
-    
+
+    public async Task<Student?> DeleteStudent(int id)
+    {
+        var student = await _context.Students
+            .Include(s => s.User)
+            .FirstOrDefaultAsync(s => s.Id == id);
+
+        if (student == null)
+            return null;
+
+        if (student.User != null)
+        {
+            _context.Users.Remove(student.User);
+        }
+
+        _context.Students.Remove(student);
+
+        await _context.SaveChangesAsync();
+
+        return student;
+    }
 }

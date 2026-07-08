@@ -2,6 +2,7 @@
 using backend.Model;
 using Dtos;
 using Microsoft.EntityFrameworkCore;
+using model;
 
 public class ClassroomStudentService
 {
@@ -39,5 +40,19 @@ public class ClassroomStudentService
             .Include(cs => cs.Student)
             .ToListAsync();
         return students;
+    }
+    public async Task<List<ClassroomStudents>> GetMyClassroom(int userId)
+    {
+
+        var student = await _context.Students
+        .FirstOrDefaultAsync(s => s.UserId == userId);
+
+        if (student == null)
+            return new List<ClassroomStudents>();
+        var classroom = await _context.ClassroomsStudents
+            .Where(cs=> cs.StudentId == student.Id)
+            .Include(cs=> cs.Classroom) .ToListAsync();
+
+        return classroom;
     }
 }

@@ -1,32 +1,53 @@
 
 import { useState } from "react";
 import {useNavigate } from "react-router-dom"
-import { login } from "../api/registerApi";
+import { loginUser } from "../api/registerApi";
+import { useAuth } from "../context/authContext";
+
 function Login() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState();
     const navigate = useNavigate();
+    const { login } = useAuth();
 
     const goRegister = () => {
         navigate("/register")
     }
-    const handleLogin = async (e) => {
-        e.preventDefault()
-        try {
+    
 
-            const res = await login({
+    const handleLogin = async (e) => {
+        e.preventDefault();
+
+        try {
+            const res = await loginUser({
                 Email: email,
                 Password: password
-            })
-            localStorage.setItem("token", res.data.token);
-            console.log(res)
-            navigate("/classroom")
+            });
+
+            login(res.data.token);
+
+            switch (res.data.role) {
+                case "Admin":
+                    navigate("/classroom");
+                    break;
+
+                case "Teacher":
+                    navigate("/classroom");
+                    break;
+
+                case "Student":
+                    navigate("/studentPage");
+                    break;
+
+                default:
+                    navigate("/");
+                    break;
+            }
         } catch (err) {
-            setError(err.response.data.message)
-            console.log(err)
+            setError(err.response?.data?.message ?? "Login failed");
         }
-    }
+    };
     return (
         <div>
             <form onSubmit={handleLogin}>

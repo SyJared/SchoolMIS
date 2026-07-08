@@ -6,9 +6,12 @@ function Student() {
     const [studentLoading, setStudentLoading] = useState(true)
 
     const [name, setName] = useState()
+    const [password, setPassword] = useState("")
+    const [email, setEmail] = useState("")
 
     const [isEditting, setIsEditting] = useState("")
     const [editName, setEditName] = useState("")
+    
 
     
     useEffect(() => {
@@ -30,7 +33,7 @@ function Student() {
         e.preventDefault();
         try {
 
-            const res = await createStudents({ name });
+            const res = await createStudents({ name, email, password });
             console.log(res)
             setStudents((s) => [...s, { id: res.data.id, name: res.data.name }])
             setName("")
@@ -76,6 +79,8 @@ function Student() {
                 </div>
                 <form onSubmit={handleSubmit}>
                     <input type="text" value={name} onChange={(e) => setName(e.target.value)} />
+                    <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
+                    <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
                     <button>submit</button>
                 </form>
             </div>

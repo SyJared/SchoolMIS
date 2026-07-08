@@ -23,6 +23,12 @@ namespace backend.Data
         public DbSet<Grade> Grades { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Student>()
+                .HasOne(s => s.User)
+                .WithOne()
+                .HasForeignKey<Student>(s => s.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
             modelBuilder.Entity<Classes>()
                 .Property(c => c.Start)
                 .HasColumnType("timestamp without time zone");
@@ -30,7 +36,6 @@ namespace backend.Data
             modelBuilder.Entity<Classes>()
                 .Property(c => c.End)
                 .HasColumnType("timestamp without time zone");
-            base.OnModelCreating(modelBuilder);
         }
     }
 }

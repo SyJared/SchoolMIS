@@ -12,6 +12,6 @@ api.interceptors.request.use((config) => {
     return config;
 });
 
-export const login = (data) => api.post("/login", data);
+export const loginUser = (data) => api.post("/login", data);
 
 export const register = (data) => api.post("/register", data);
