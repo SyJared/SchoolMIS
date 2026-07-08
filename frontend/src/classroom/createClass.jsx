@@ -59,7 +59,7 @@ import AttendanceChecklist from "./attendanceChecklist";
                 <div>
                     {!loading && classRender(classes)}
                 </div>
-                {<AttendanceChecklist open={open} onClose={() => setOpen(null)} />}
+                {<AttendanceChecklist open={open} onClose={() => setOpen(null)} classes={classes } />}
             </div>
         )
     }

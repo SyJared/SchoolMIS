@@ -1,4 +1,5 @@
 using backend.Data;
+using backend.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -54,6 +55,7 @@ builder.Services.AddScoped<JwtService>();
 builder.Services.AddScoped<ClassService>();
 builder.Services.AddScoped<TeacherService>();
 builder.Services.AddScoped<AttendanceService>();
+builder.Services.AddScoped<IGradeService, GradeService>();
 
 var app = builder.Build();
 app.UseHttpsRedirection();

@@ -16,12 +16,29 @@ namespace backend.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateAttendance(CreateAttendanceDto dto)
         {
-            await _attendanceService.CreateAttendance(dto);
-
-            return Ok(new
+            try
             {
-                message = "Attendance created"
-            });
+                await _attendanceService.CreateAttendance(dto);
+
+                return Ok(new
+                {
+                    message = "Attendance created"
+                });
+            }
+            catch(InvalidOperationException ex)
+            {
+                return BadRequest(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+        [Authorize]
+        [HttpGet("{classId}")]
+        public async Task<IActionResult> GetAttendanceById(int classId)
+        {
+            var attendance = await _attendanceService.GetAttendance(classId);
+            return Ok(attendance);
         }
     }
 }

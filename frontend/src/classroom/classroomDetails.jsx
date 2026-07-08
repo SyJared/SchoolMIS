@@ -3,8 +3,11 @@ import { useParams } from "react-router-dom"
 import { getClassroomById } from "../api/classroomApi";
 import AddStudentToClassroom from "./addStudentToClassroom";
 import CreateClass from "./createClass";
+import GradingChecklist from "./gradeChecklist";
+
 function ClassroomDetails() {
     const { ClassroomId } = useParams();
+    const [isGradingOpen, setIsGradingOpen] = useState(false);
     const [classroom, setClassroom] = useState({});
     useEffect(() => {
         const fetchClassroomById = async() => {
@@ -36,6 +39,17 @@ function ClassroomDetails() {
                 <h1>Create class</h1>
                 <CreateClass ClassroomId={ClassroomId} />
             </div>
+            <button
+                onClick={() => setIsGradingOpen(true)}
+                className="rounded bg-blue-600 px-4 py-2 text-white"
+            >
+                Open Grading
+            </button>
+
+            <GradingChecklist
+                open={isGradingOpen}
+                onClose={() => setIsGradingOpen(false)}
+            />
         </div>
     )
 }

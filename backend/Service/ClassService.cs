@@ -29,4 +29,11 @@ public class ClassService
         var classes = await _context.Classes.ToListAsync();
         return classes;
     }
+    public async Task MarkClassAsDone(int classId)
+    {
+        var classes = await _context.Classes.FindAsync(classId);
+
+        classes.IsDone = true;
+        await _context.SaveChangesAsync();
+    }
 }

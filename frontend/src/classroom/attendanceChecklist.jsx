@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 import { getStudentOfClassroom } from "../api/classroomStudentApi";
 import { useParams } from "react-router-dom";
-import { createAttendance } from "../api/attendanceApi";
+import { createAttendance, getAttendanceById } from "../api/attendanceApi";
+import { markAsDone } from "../api/classApi";
 
 const STATUSES = ["Present", "Absent", "Late", "Excused"];
 
-function AttendanceChecklist({ open, onClose }) {
+function AttendanceChecklist({ open, onClose, classes }) {
     const [visible, setVisible] = useState(false);
     const { ClassroomId } = useParams();
 
@@ -16,22 +17,40 @@ function AttendanceChecklist({ open, onClose }) {
     const [submitting, setSubmitting] = useState(false);
     const [submitMessage, setSubmitMessage] = useState("");
 
-   
+    const [existingAttendance, setExistingAttendance] = useState([]);
 
     useEffect(() => {
-        if (!open) return; // don't fetch when the modal is closed/closing
+        if (!open) return;
 
-        const fetchStudents = async () => {
+        const fetchData = async () => {
             setLoading(true);
-            try {
-                const res = await getStudentOfClassroom(ClassroomId);
-                setStudents(res.data);
 
-                // default everyone to "Present" when the roster loads
-                const initial = {};
-                res.data.student.forEach((s) => {
-                    initial[s.id] = "Present";
+            try {
+                const [studentsRes, attendanceRes] = await Promise.all([
+                    getStudentOfClassroom(ClassroomId),
+                    getAttendanceById(open).catch(() => ({ data: [] }))
+                ]);
+
+                const studentsData = studentsRes.data;
+                const existing = attendanceRes.data || [];
+                
+                setStudents(studentsData);
+                setExistingAttendance(existing);
+
+                // studentId -> status
+                const existingMap = {};
+
+                existing.forEach((item) => {
+                    existingMap[item.studentId] = item.status;
                 });
+
+                const initial = {};
+
+                studentsData.forEach((s) => {
+                    initial[s.studentId] =
+                        existingMap[s.studentId] || "Present";
+                });
+
                 setAttendance(initial);
             } catch (err) {
                 console.log(err);
@@ -39,7 +58,8 @@ function AttendanceChecklist({ open, onClose }) {
                 setLoading(false);
             }
         };
-        fetchStudents();
+
+        fetchData();
     }, [open, ClassroomId]);
 
     useEffect(() => {
@@ -63,18 +83,28 @@ function AttendanceChecklist({ open, onClose }) {
                 ClassId: open, // `open` holds the class id passed down from CreateClass
                 Attendance: Object.entries(attendance).map(([studentId, status]) => ({
                     StudentId: parseInt(studentId),
-                    Status: status, // "Present" | "Absent" | "Late" | "Excused" — see enum note above
+                    Status: status, // "Present" | "Absent" | "Late" | "Excused"
                 })),
             };
             await createAttendance(payload);
-            setSubmitMessage("Attendance saved!");
+            setSubmitMessage(
+                existingAttendance.length > 0 ? "Attendance updated!" : "Attendance saved!"
+            );
+            setExistingAttendance(payload.Attendance); // reflect the new saved state locally
         } catch (err) {
-            console.log(err);
+            
             setSubmitMessage(err.response?.data?.message || "Failed to save attendance");
         } finally {
             setSubmitting(false);
         }
     };
+    const handleMarkAsDone = async () => {
+        try {
+            const res = await markAsDone(open);
+        } catch (err) {
+            console.log(err)
+        }
+    }
 
     if (!visible) return null;
 
@@ -112,9 +142,15 @@ function AttendanceChecklist({ open, onClose }) {
 
                     {!loading &&
                         students.map((s) => (
-                            <div key={s.id} className="border-b py-3">
-                                <p className="font-medium mb-2">{s.student.name}</p>
-                                <div className="flex gap-4">
+                            <div
+                                key={s.studentId}
+                                className="border-b py-3"
+                            >
+                                <p className="font-medium mb-2">
+                                    {s.student.name}
+                                </p>
+
+                                <div className="flex gap-4 flex-wrap">
                                     {STATUSES.map((status) => (
                                         <label
                                             key={status}
@@ -122,9 +158,10 @@ function AttendanceChecklist({ open, onClose }) {
                                         >
                                             <input
                                                 type="radio"
-                                                name={`attendance-${s.id}`}
-                                                checked={attendance[s.id] === status}
-                                                onChange={() => setStatus(s.id, status)}
+                                                name={`attendance-${s.studentId}`}
+                                                value={status}
+                                                checked={attendance[s.studentId] === status}
+                                                onChange={() => setStatus(s.studentId, status)}
                                             />
                                             {status}
                                         </label>
@@ -133,13 +170,20 @@ function AttendanceChecklist({ open, onClose }) {
                             </div>
                         ))}
                     {!loading && students.length > 0 && (
+                        <>
                         <button
                             onClick={handleSubmit}
                             disabled={submitting}
                             className="mt-4 w-full rounded bg-blue-600 py-2 text-white disabled:opacity-50"
                         >
-                            {submitting ? "Saving..." : "Submit Attendance"}
-                        </button>
+                            {submitting
+                                ? "Saving..."
+                                : existingAttendance.length > 0
+                                    ? "Edit Attendance"
+                                    : "Submit Attendance"}
+                            </button>
+                            <button onClick={() => handleMarkAsDone()} className="bg-green-500 px-10"> Mark as done</button>
+                        </>
                     )}
                     {submitMessage && <p className="mt-2 text-sm">{submitMessage}</p>}
                 </div>

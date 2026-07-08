@@ -27,5 +27,12 @@ namespace backend.Controllers
             var classes = await _classService.GetAllClass();
             return Ok(classes);
         }
+        [Authorize(Roles = "Teacher,Admin")]
+        [HttpPost("{classId}")]
+        public async Task<IActionResult>MarkAsDone(int classId)
+        {
+            await _classService.MarkClassAsDone(classId);
+            return Ok();
+        }
     }
 }
