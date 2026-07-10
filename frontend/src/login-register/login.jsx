@@ -24,7 +24,7 @@ function Login() {
                 Email: email,
                 Password: password
             });
-
+            console.log(res)
             login(res.data.token);
 
             switch (res.data.role) {
@@ -37,7 +37,7 @@ function Login() {
                     break;
 
                 case "Student":
-                    navigate("/studentPage");
+                    navigate(`/studentClassroom`);
                     break;
 
                 default:

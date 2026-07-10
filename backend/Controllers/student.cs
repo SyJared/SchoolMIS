@@ -45,5 +45,21 @@ namespace backend.Controllers
             var editStud = await _studentService.EditStudent(Id, dto);
             return Ok(editStud);
         }
+
+        [Authorize(Roles ="Student,Admin")]
+        [HttpPut]
+        public async Task<IActionResult> InsertStudentInfo([FromForm] StudentProfileDto dto)
+        {
+            var student = await _studentService.InsertStudentInfo(dto);
+            return Ok(student);
+        }
+
+        [Authorize(Roles ="Student,Admin")]
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetStudentInfoById(int id)
+        {
+            var student = await _studentService.getStudentById(id);
+            return Ok(student);
+        }
     }
 }

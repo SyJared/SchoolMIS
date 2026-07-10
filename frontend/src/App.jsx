@@ -8,6 +8,7 @@ import Header from "./header/header.jsx";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useAuth } from "./context/authContext";
 import StudentPage from "./studentPage/studentPage";
+import StudentProfile from "./student/studentProfile";
 function App() {
     const { user } = useAuth();
 
@@ -21,8 +22,10 @@ function App() {
                   <Route path="/register" element={<Register />} />
                   <Route path="/classroom" element={<Classroom />} />
                   <Route path="/classroom/:ClassroomId" element={<ClassroomDetails />} />
-                  {user?.role === "Student" && (
-                      <Route path="/studentPage" element={<StudentPage />} />
+                  {user?.role === "Student" && (<>
+                      <Route path={`/studentClassroom`} element={<StudentPage />} />
+                      <Route path={'/studentProfile/:studentId'} element={<StudentProfile />} />
+                  </>
                   ) }
               </Routes>
           </BrowserRouter>

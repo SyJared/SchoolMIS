@@ -1,6 +1,7 @@
 using backend.Data;
 using Dtos;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using model;
 
@@ -92,6 +93,53 @@ public class StudentService
         _context.Students.Remove(student);
 
         await _context.SaveChangesAsync();
+
+        return student;
+    }
+    public async Task<Student?> InsertStudentInfo(StudentProfileDto dto)
+    {
+        var student = await _context.Students
+            .FirstOrDefaultAsync(s => s.UserId == dto.Id);
+
+        if (student == null)
+            return null;
+
+        student.Birthdate = dto.Birthdate;
+        student.ContactNumber = dto.ContactNumber;
+        student.City = dto.City;
+        student.Municipality = dto.Municipality;
+
+        if (dto.ProfileImage != null)
+        {
+            var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "uploads", "profile");
+
+            if (!Directory.Exists(uploadsFolder))
+            {
+                Directory.CreateDirectory(uploadsFolder);
+            }
+
+            var fileName = Guid.NewGuid().ToString() +
+                           Path.GetExtension(dto.ProfileImage.FileName);
+
+            var filePath = Path.Combine(uploadsFolder, fileName);
+
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await dto.ProfileImage.CopyToAsync(stream);
+            }
+
+            // Save only the filename
+            student.ProfileImage = fileName;
+        }
+
+        await _context.SaveChangesAsync();
+
+        return student;
+    }
+    public async Task<Student> getStudentById(int id)
+    {
+        var student = await _context.Students
+    .FirstOrDefaultAsync(s => s.UserId == id);
 
         return student;
     }
