@@ -5,7 +5,7 @@ import { searchTeacher } from "../api/teacherApi"
 
 function Classroom() {
     const [classroomForm, setClassroomForm] = useState({
-        Advisor: '',
+        AdvisorId: null,
         Subject: '',
         GradeLevel: '',
         Section: ''
@@ -28,7 +28,7 @@ function Classroom() {
         const timer = setTimeout(async () => {
             try {
                 const res = await searchTeacher(search);
-
+                console.log(res)
                 setSearchedAdvisor(res.data)
             } catch (err) {
                 console.log(err)
@@ -62,6 +62,7 @@ function Classroom() {
     const handleSubmit = async (e) => {
         e.preventDefault()
         try {
+            console.log(classroomForm)
             const res = await createClassroom(classroomForm)
             setCreateClassroomMessage(res.data.message)
         } catch (err) {
@@ -89,7 +90,7 @@ function Classroom() {
             return (
 
                 <div className="border-1 my-10" key={c.id}>
-                    <p>Advisor: {c.advisor}</p>
+                    <p>Advisor: {c.advisor?.name}</p>
                     <p>Subject: {c.subject}</p>
                     <p>Grade Level: {c.gradeLevel}</p>
                     <p>Section: {c.section}</p>
@@ -107,7 +108,7 @@ function Classroom() {
 
         setClassroomForm(prev => ({
             ...prev,
-            Advisor: advisor.name       // or advisor.id if your backend expects an ID
+            AdvisorId: advisor.id       // or advisor.id if your backend expects an ID
         }));
     };
     const isSelected = (id) => selectedAdvisor === id;
@@ -124,7 +125,7 @@ function Classroom() {
             <form onSubmit={handleSubmit}>
                 <div>
                     <label>Advisor:</label>
-                    <input type="text" name="Advisor" value={search} onChange={(e) => setSearch(e.target.value)} />
+                    <input type="text"  value={search} onChange={(e) => setSearch(e.target.value)} />
                     <div>
                         {searchRender(searchedAdvisor)}
                     </div>

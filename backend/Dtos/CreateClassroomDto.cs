@@ -1,7 +1,7 @@
 namespace Dtos;
 
 public record CreateClassroomDto(
-    string Advisor,
+    int AdvisorId,
     string Subject,
     string GradeLevel,
     string Section

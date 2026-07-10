@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using backend.Data;
@@ -11,9 +12,11 @@ using backend.Data;
 namespace backend.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260710115447_advisorIdinclassroom")]
+    partial class advisorIdinclassroom
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -135,6 +138,10 @@ namespace backend.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("Advisor")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<int>("AdvisorId")
                         .HasColumnType("integer");
 
@@ -150,9 +157,12 @@ namespace backend.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<int>("UsersId")
+                        .HasColumnType("integer");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("AdvisorId");
+                    b.HasIndex("UsersId");
 
                     b.ToTable("Classrooms");
                 });
@@ -293,13 +303,13 @@ namespace backend.Migrations
 
             modelBuilder.Entity("model.Classroom", b =>
                 {
-                    b.HasOne("model.Users", "Advisor")
+                    b.HasOne("model.Users", "Users")
                         .WithMany()
-                        .HasForeignKey("AdvisorId")
+                        .HasForeignKey("UsersId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Advisor");
+                    b.Navigation("Users");
                 });
 
             modelBuilder.Entity("model.Student", b =>

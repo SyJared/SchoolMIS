@@ -14,7 +14,7 @@ function ClassroomDetails() {
             try {
                 const res = await getClassroomById(ClassroomId)
                 setClassroom(res.data);
-                
+                console.log(res)
             } catch (err) {
                 console.log(err)
             }
@@ -25,7 +25,7 @@ function ClassroomDetails() {
         <div>
             classrooms
             <div className="border-1">
-                Advisor: {classroom.advisor}
+                Advisor: {classroom.advisor?.name}
                 Grade Level: {classroom.gradeLevel}
                 Section: {classroom.section}
                 Subject: {classroom.subject }

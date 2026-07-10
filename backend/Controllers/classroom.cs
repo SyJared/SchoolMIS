@@ -4,6 +4,7 @@ using model;
 using backend.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 
 namespace backend.Controllers
@@ -55,6 +56,21 @@ namespace backend.Controllers
         {
             var classroom = await _classroomService.DeleteClassroomById(ClassroomId);
             return Ok();
+        }
+        [Authorize(Roles = "Teacher")]
+        [HttpGet("teacher")]
+        public async Task<IActionResult> GetTeacherClassrooms()
+        {
+            var AdvisorId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+            var classrooms = await _classroomService.getAllTeacherClassroom(AdvisorId);
+            if(classrooms == null)
+            {
+                return Ok(new
+                {
+                    mewssage="no classrooms yet"
+                });
+            }
+            return Ok(classrooms);
         }
     }
 }

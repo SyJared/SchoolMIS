@@ -1,12 +1,12 @@
 ﻿using backend.Data;
 using Dtos;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 using model;
 
 public class ClassroomService
 {
     private readonly AppDbContext _context;
+
     public ClassroomService(AppDbContext context)
     {
         _context = context;
@@ -14,36 +14,62 @@ public class ClassroomService
 
     public async Task<Classroom> CreateClassroom(CreateClassroomDto dto)
     {
+        var teacher = await _context.Users.FindAsync(dto.AdvisorId);
+
+        if (teacher == null)
+        {
+            throw new Exception("Teacher not found.");
+        }
+
         var classroom = new Classroom
         {
-            Advisor = dto.Advisor,
+            AdvisorId = dto.AdvisorId,
             Subject = dto.Subject,
             GradeLevel = dto.GradeLevel,
-            Section = dto.Section,
+            Section = dto.Section
         };
+
         _context.Classrooms.Add(classroom);
         await _context.SaveChangesAsync();
+
         return classroom;
     }
+
     public async Task<List<Classroom>> GetClassrooms()
     {
-        var classrooms = await _context.Classrooms.ToListAsync();
-        return classrooms;
+        return await _context.Classrooms
+            .Include(c => c.Advisor)
+            .ToListAsync();
     }
-    public async Task<Classroom?> GetClassroomById(int ClassroomId)
+
+    public async Task<Classroom?> GetClassroomById(int classroomId)
     {
-        return await _context.Classrooms.FindAsync(ClassroomId);
+        return await _context.Classrooms
+            .Include(c => c.Advisor)
+            .FirstOrDefaultAsync(c => c.Id == classroomId);
     }
-    public async Task<Classroom>DeleteClassroomById(int ClassroomId)
+
+    public async Task<Classroom?> DeleteClassroomById(int classroomId)
     {
-        var classroom = await _context.Classrooms.FindAsync(ClassroomId);
-        if(classroom == null)
+        var classroom = await _context.Classrooms.FindAsync(classroomId);
+
+        if (classroom == null)
         {
-            Console.WriteLine($"Classroom with ID {ClassroomId} not found.");
             return null;
         }
+
         _context.Classrooms.Remove(classroom);
         await _context.SaveChangesAsync();
+
         return classroom;
+    }
+    public async Task<List<Classroom>> getAllTeacherClassroom(int AdvisorId)
+    {
+        var classrooms = await _context.Classrooms.Where(c=> c.AdvisorId == AdvisorId).ToListAsync();
+        if(classrooms.Count == 0)
+        {
+            return null;
+        }
+        return classrooms;
     }
 }
