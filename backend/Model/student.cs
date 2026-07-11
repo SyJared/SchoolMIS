@@ -1,3 +1,5 @@
+using Model;
+
 namespace model;
 
     public class Student
@@ -12,5 +14,7 @@ namespace model;
     public string? ContactNumber { get; set; }
 
     public string? ProfileImage {  get; set; }
-    
-    }
+
+    public ICollection<Attendance> Attendances { get; set; } = new List<Attendance>();
+
+}

@@ -11,5 +11,6 @@ namespace Model;
     public DateTime Start { get; set; }
     public DateTime End { get; set; }
 
-    public bool? IsDone { get; set; } = false;      
+    public bool? IsDone { get; set; } = false;
+    public ICollection<Attendance> Attendances { get; set; } = new List<Attendance>();
 }

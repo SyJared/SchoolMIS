@@ -63,13 +63,5 @@ public class ClassroomService
 
         return classroom;
     }
-    public async Task<List<Classroom>> getAllTeacherClassroom(int AdvisorId)
-    {
-        var classrooms = await _context.Classrooms.Where(c=> c.AdvisorId == AdvisorId).ToListAsync();
-        if(classrooms.Count == 0)
-        {
-            return null;
-        }
-        return classrooms;
-    }
+    
 }

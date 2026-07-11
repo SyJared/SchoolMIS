@@ -1,6 +1,7 @@
 using Dtos;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace backend.Controllers
 {
@@ -33,6 +34,21 @@ namespace backend.Controllers
         {
             await _classService.MarkClassAsDone(classId);
             return Ok();
+        }
+        [Authorize(Roles = "Teacher")]
+        [HttpGet("teacher")]
+        public async Task<IActionResult> GetTeacherClassrooms()
+        {
+            var AdvisorId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+            var classrooms = await _classService.GetAllInfoForDashboard(AdvisorId);
+            if (classrooms == null)
+            {
+                return Ok(new
+                {
+                    mewssage = "no classrooms yet"
+                });
+            }
+            return Ok(classrooms);
         }
     }
 }

@@ -1,6 +1,7 @@
 using backend.Data;
 using Dtos;
 using Microsoft.EntityFrameworkCore;
+using model;
 using Model;
 
 public class ClassService
@@ -35,5 +36,27 @@ public class ClassService
 
         classes.IsDone = true;
         await _context.SaveChangesAsync();
+    }
+    public async Task<List<TeacherDashboardDto>> GetAllInfoForDashboard(int advisorId)
+    {
+        var classes = await _context.Classes
+            .Where(c => c.Classroom.AdvisorId == advisorId)
+            .Select(c => new TeacherDashboardDto(
+                c.Id,
+                c.Classroom.Subject,
+                c.Classroom.GradeLevel,
+                c.Classroom.Section,
+                c.Start,
+                c.End,
+                c.IsDone,
+                c.Attendances.Select(a => new StudentAttendanceDto(
+                    a.StudentId,
+                    a.Student.Name,
+                    a.Status
+                )).ToList()
+            ))
+            .ToListAsync();
+
+        return classes;
     }
 }

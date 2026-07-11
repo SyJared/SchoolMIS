@@ -10,6 +10,7 @@ import { useAuth } from "./context/authContext";
 import StudentPage from "./studentPage/studentPage";
 import StudentProfile from "./student/studentProfile";
 import TeacherDashboard from "./dashboards/teacherDashboard";
+import StudentDashboard from "./dashboards/studentDashboard";
 function App() {
     const { user } = useAuth();
 
@@ -24,6 +25,7 @@ function App() {
                   <Route path="/classroom" element={<Classroom />} />
                   <Route path="/classroom/:ClassroomId" element={<ClassroomDetails />} />
                   <Route path="/teacherDashboard" element={<TeacherDashboard />} />
+                  <Route path="/studentDashboard" element={<StudentDashboard />} />
                       {user?.role === "Student" && (<>
                       <Route path={`/studentClassroom`} element={<StudentPage />} />
                       <Route path={'/studentProfile/:studentId'} element={<StudentProfile />} />

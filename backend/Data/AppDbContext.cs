@@ -36,6 +36,12 @@ namespace backend.Data
             modelBuilder.Entity<Classes>()
                 .Property(c => c.End)
                 .HasColumnType("timestamp without time zone");
+
+            base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<Attendance>()
+            .HasOne(a => a.Class)
+            .WithMany(c => c.Attendances)
+            .HasForeignKey(a => a.ClassId);
         }
     }
 }

@@ -14,3 +14,5 @@ export const editStudents = async ({ Id, editName }) => api.patch(`/students/${I
 export const putStudentInfo = async (formData) => api.put("/students", formData)
 
 export const getStudentInfoById = async (id) => api.get(`/students/${id}`);
+
+export const getInfoForStudentDashboard = async () => api.get('/students/dashboard');

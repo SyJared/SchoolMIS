@@ -1,9 +1,10 @@
-using Microsoft.AspNetCore.Mvc;
-using Dtos;
-using model;
 using backend.Data;
-using Microsoft.EntityFrameworkCore;
+using Dtos;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using model;
+using System.Security.Claims;
 
 namespace backend.Controllers
 {
@@ -60,6 +61,19 @@ namespace backend.Controllers
         {
             var student = await _studentService.getStudentById(id);
             return Ok(student);
+        }
+        [Authorize(Roles = "Student")]
+        [HttpGet("dashboard")]
+        public async Task<IActionResult> Dashboard()
+        {
+            var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+
+            var dashboard = await _studentService.GetStudentDashboard(userId);
+
+            if (dashboard == null)
+                return NotFound();
+
+            return Ok(dashboard);
         }
     }
 }
