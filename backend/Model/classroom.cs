@@ -12,6 +12,4 @@ public class Classroom
 
     public string Section { get; set; }
 
-    
-
 }

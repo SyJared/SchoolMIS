@@ -12,6 +12,8 @@ function Header() {
             SCHOOLMIS
             </div>
             {token ? <><nav>
+                <span onClick={() => navigate("/studentDashboard")}>DashBoard</span>
+                <span onClick={() => navigate("/teacherDashboard")}>DashBoard</span>
                 <span onClick={() => navigate("/classroom")}>Classroom</span>
                 <span onClick={() => navigate("/students")}>Students</span>
                 <span onClick={() => navigate(`/studentProfile/${user.id}`)}>Profile</span>

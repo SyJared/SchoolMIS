@@ -7,14 +7,17 @@ using Model;
 public class ClassService
 {
     private readonly AppDbContext _context;
-
-    public ClassService(AppDbContext context)
+    private readonly NotificationService _notifcationService;
+    public ClassService(AppDbContext context, NotificationService notificationService)
     {
         _context = context;
+        _notifcationService = notificationService;
     }
 
     public async Task<Classes> CreateClass(ClassesDto dto)
     {
+        var students = await _context.ClassroomsStudents.Where(cs => cs.ClassroomId == dto.ClassroomId)
+            .Include(cs => cs.Student).ToListAsync();
         var newClass = new Classes
         {
             ClassroomId = dto.ClassroomId,
@@ -23,6 +26,14 @@ public class ClassService
         };
         _context.Classes.Add(newClass);
         await _context.SaveChangesAsync();
+        
+        foreach (var student in students)
+        {
+            await _notifcationService.CreateNotification(
+                student.Student.UserId,
+                $"A new class has been scheduled for {newClass.Start:f}"
+                );
+        }
         return newClass;
     }
     public async Task<List<Classes>> GetAllClass()

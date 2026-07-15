@@ -21,6 +21,8 @@ namespace backend.Data
         public DbSet<Classes> Classes { get; set; }
         public DbSet<Attendance> Attendance { get; set; }
         public DbSet<Grade> Grades { get; set; }
+
+        public DbSet<Notification> Notifications { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Student>()
