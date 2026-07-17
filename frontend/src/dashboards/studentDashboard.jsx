@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { getInfoForStudentDashboard } from "../api/studentsApi";
+import StudentCalendar from "./studentCalendar";
 
 // ---- Design tokens (Tailwind arbitrary values) ---------------------------
 // ink:    #22314A   paper: #F7F4EE   paperLine: #E4DFD3
@@ -182,6 +183,7 @@ function StudentDashboard() {
                     </>
                 )}
             </div>
+            <StudentCalendar />
         </div>
     );
 }

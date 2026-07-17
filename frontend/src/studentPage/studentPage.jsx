@@ -34,7 +34,7 @@ function StudentPage() {
     return (
         <div>
             {!classroomLoading && (classroomRender())}
-            {console.log(classroom)}
+            
         </div>
     )
 }

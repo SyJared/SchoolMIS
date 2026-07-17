@@ -1,4 +1,5 @@
 using backend.Data;
+using Microsoft.EntityFrameworkCore;
 
 public class NotificationService
 {
@@ -20,5 +21,31 @@ public class NotificationService
         _context.Notifications.AddRange(notif);
         await _context.SaveChangesAsync();
         return notif;
+    }
+
+    public async Task ReadNotification(int userId)
+    {
+        var notifications = await _context.Notifications
+            .Where(n => n.UserId == userId && !n.IsRead)
+            .ToListAsync();
+
+        if (!notifications.Any())
+            return;
+
+        foreach (var notification in notifications)
+        {
+            notification.IsRead = true;
+        }
+
+        await _context.SaveChangesAsync();
+    }
+    public async Task<List<Notification>> GetNotificationById(int userId)
+    {
+        var notifications = await _context.Notifications
+            .Where(n => n.UserId == userId)
+            .OrderByDescending(n => n.CreatedAt)
+            .ToListAsync();
+
+        return notifications;
     }
 }

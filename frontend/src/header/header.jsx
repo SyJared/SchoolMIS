@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom" 
 import { useAuth } from "../context/authContext";
+import Notification from "./notification";
 function Header() {
     const navigate = useNavigate();
     const token = localStorage.getItem("token");
@@ -11,12 +12,14 @@ function Header() {
             <div>
             SCHOOLMIS
             </div>
-            {token ? <><nav>
+            {user ? <><nav>
+                {console.log(user) }
                 <span onClick={() => navigate("/studentDashboard")}>DashBoard</span>
                 <span onClick={() => navigate("/teacherDashboard")}>DashBoard</span>
                 <span onClick={() => navigate("/classroom")}>Classroom</span>
                 <span onClick={() => navigate("/students")}>Students</span>
                 <span onClick={() => navigate(`/studentProfile/${user.id}`)}>Profile</span>
+                <Notification UserId={user.id} />
             </nav><div>
                     logout
                 </div></> : null}

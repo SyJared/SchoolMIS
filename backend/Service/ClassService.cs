@@ -70,4 +70,29 @@ public class ClassService
 
         return classes;
     }
+    public async Task<List<ClassesByStudentIdDto>> GetClassByStudentId(int StudentId)
+    {
+        var student = await _context.Students
+    .FirstOrDefaultAsync(s => s.UserId == StudentId);
+
+        if (student == null)
+        {
+            return null;
+        }
+        var classes = await _context.Classes
+            .Where(c => _context.ClassroomsStudents.Any(cs =>
+                cs.StudentId == student.Id &&
+                cs.ClassroomId == c.ClassroomId))
+            .Select(c => new ClassesByStudentIdDto(
+                c.Id,
+                c.Classroom.Subject,
+                c.Classroom.Advisor.Name,
+                c.Start,
+                c.End
+            ))
+            .ToListAsync();
+
+
+        return classes;
+    }
 }

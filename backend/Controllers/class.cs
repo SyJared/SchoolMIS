@@ -1,6 +1,9 @@
 using Dtos;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Formatters;
+using Microsoft.EntityFrameworkCore;
+using model;
 using System.Security.Claims;
 
 namespace backend.Controllers
@@ -49,6 +52,21 @@ namespace backend.Controllers
                 });
             }
             return Ok(classrooms);
+        }
+
+        [Authorize(Roles = "Student")]
+        [HttpGet("student")]
+        public async Task<IActionResult> ClassesByStudentId()
+        {
+            var StudentId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+            
+            var classes = await _classService.GetClassByStudentId(StudentId);
+
+            if(classes == null && classes.Count== 0)
+            {
+                return NotFound();
+            }
+            return Ok(classes);
         }
     }
 }
