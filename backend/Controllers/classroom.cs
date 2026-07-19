@@ -1,8 +1,7 @@
-using Microsoft.AspNetCore.Mvc;
 using Dtos;
-
-
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 
 
@@ -56,6 +55,20 @@ namespace backend.Controllers
             var classroom = await _classroomService.DeleteClassroomById(ClassroomId);
             return Ok();
         }
-        
+
+        [Authorize(Roles = "Student")]
+        [HttpGet("student/{classroomId}")]
+        public async Task<IActionResult> GetStudentClassroom(int classroomId)
+        {
+            var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+
+            var result = await _classroomService.GetStudentClassroomDetails(userId, classroomId);
+
+            if (result == null)
+                return NotFound();
+
+            return Ok(result);
+        }
+
     }
 }

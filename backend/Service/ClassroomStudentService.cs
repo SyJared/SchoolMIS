@@ -41,18 +41,23 @@ public class ClassroomStudentService
             .ToListAsync();
         return students;
     }
-    public async Task<List<ClassroomStudents>> GetMyClassroom(int userId)
+    public async Task<List<StudentClassroomDto>> GetMyClassroom(int userId)
     {
-
         var student = await _context.Students
-        .FirstOrDefaultAsync(s => s.UserId == userId);
+            .FirstOrDefaultAsync(s => s.UserId == userId);
 
         if (student == null)
-            return new List<ClassroomStudents>();
-        var classroom = await _context.ClassroomsStudents
-            .Where(cs=> cs.StudentId == student.Id)
-            .Include(cs=> cs.Classroom) .ToListAsync();
+            return new List<StudentClassroomDto>();
 
-        return classroom;
+        return await _context.ClassroomsStudents
+            .Where(cs => cs.StudentId == student.Id)
+            .Select(cs => new StudentClassroomDto(
+                cs.Classroom.Id,
+                cs.Classroom.Subject,
+                cs.Classroom.GradeLevel,
+                cs.Classroom.Section,
+                cs.Classroom.Advisor.Name
+            ))
+            .ToListAsync();
     }
 }

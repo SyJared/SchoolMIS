@@ -5,3 +5,9 @@ public record StudentAttendanceDto(
 	string Name,
 	AttendanceStatus Status
 	);
+public record ForStudentAttendanceDto(
+    int StudentId,
+    string Name,
+    AttendanceStatus Status,
+    int ClassId
+    );

@@ -8,10 +8,12 @@ public class ClassService
 {
     private readonly AppDbContext _context;
     private readonly NotificationService _notifcationService;
-    public ClassService(AppDbContext context, NotificationService notificationService)
+    private readonly ILogger<ClassStatusBackgroundService> _logger;
+    public ClassService(AppDbContext context, NotificationService notificationService, ILogger<ClassStatusBackgroundService> logger )
     {
         _context = context;
         _notifcationService = notificationService;
+        _logger = logger;
     }
 
     public async Task<Classes> CreateClass(ClassesDto dto)
@@ -26,14 +28,13 @@ public class ClassService
         };
         _context.Classes.Add(newClass);
         await _context.SaveChangesAsync();
-        
-        foreach (var student in students)
-        {
-            await _notifcationService.CreateNotification(
-                student.Student.UserId,
-                $"A new class has been scheduled for {newClass.Start:f}"
-                );
-        }
+
+        await _notifcationService.NotifyClassroom(
+     dto.ClassroomId,
+     NotificationType.ClassCreated,
+     $"A new class has been scheduled for {newClass.Start:f}."
+ ); 
+
         return newClass;
     }
     public async Task<List<Classes>> GetAllClass()
@@ -94,5 +95,26 @@ public class ClassService
 
 
         return classes;
+    }
+
+    public async Task UpdateFinishedClasses()
+    {
+        var classes = await _context.Classes
+        .Include(c => c.Classroom)
+        .Where(c => c.IsDone ==false  && c.End <= DateTime.Now)
+        .ToListAsync();
+
+        foreach (var cls in classes)
+        {
+            cls.IsDone = true;
+
+            await _notifcationService.NotifyClassroom(
+                cls.ClassroomId,
+                NotificationType.ClassEnded,
+                $"The {cls.Classroom.Subject} class has ended."
+            );
+        }
+
+        await _context.SaveChangesAsync();
     }
 }

@@ -48,4 +48,23 @@ public class NotificationService
 
         return notifications;
     }
+    public async Task NotifyClassroom(int classroomId,NotificationType type,string message)
+    {
+        var userIds = await _context.ClassroomsStudents
+            .Where(cs => cs.ClassroomId == classroomId)
+            .Select(cs => cs.Student.UserId)
+            .ToListAsync();
+
+        foreach (var userId in userIds)
+        {
+            _context.Notifications.Add(new Notification
+            {
+                UserId = userId,
+                NotificationType = type,
+                Message = message
+            });
+        }
+
+        await _context.SaveChangesAsync();
+    }
 }

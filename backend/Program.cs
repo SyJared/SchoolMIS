@@ -58,6 +58,7 @@ builder.Services.AddScoped<TeacherService>();
 builder.Services.AddScoped<AttendanceService>();
 builder.Services.AddScoped<IGradeService, GradeService>();
 builder.Services.AddScoped<NotificationService>();
+builder.Services.AddHostedService<ClassStatusBackgroundService>();
 
 var app = builder.Build();
 app.UseHttpsRedirection();

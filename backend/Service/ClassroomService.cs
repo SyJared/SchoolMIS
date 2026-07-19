@@ -1,4 +1,5 @@
 ﻿using backend.Data;
+using backend.Model;
 using Dtos;
 using Microsoft.EntityFrameworkCore;
 using model;
@@ -63,5 +64,49 @@ public class ClassroomService
 
         return classroom;
     }
-    
+
+    public async Task<StudentClassroomDetailsDto?> GetStudentClassroomDetails(
+    int userId,
+    int classroomId)
+    {
+        var student = await _context.Students
+            .FirstOrDefaultAsync(s => s.UserId == userId);
+
+        if (student == null)
+            return null;
+
+        return await _context.Classrooms
+            .Where(c => c.Id == classroomId)
+            .Where(c => c.ClassroomStudents.Any(cs => cs.StudentId == student.Id))
+            .Select(c => new StudentClassroomDetailsDto(
+                c.Id,
+                c.Subject,
+                c.GradeLevel,
+                c.Section,
+                c.Advisor.Name,
+
+                c.Classes
+                    .OrderBy(x => x.Start)
+                    .Select(x => new StudentClassDto(
+                        x.Id,
+                        x.Start,
+                        x.End,
+                        x.IsDone
+                    ))
+                    .ToList(),
+
+                c.Classes
+                    .SelectMany(x => x.Attendances)
+                    .Where(a => a.StudentId == student.Id)
+                    .Select(a => new ForStudentAttendanceDto(
+                        a.StudentId,
+                        a.Student.Name,
+                        a.Status,
+                        a.ClassId
+                    ))
+                    .ToList()
+            ))
+            .FirstOrDefaultAsync();
+    }
+
 }

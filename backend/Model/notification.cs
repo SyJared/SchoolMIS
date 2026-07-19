@@ -13,6 +13,7 @@ public class Notification
 public enum NotificationType{
     ClassCreated,
     ClassDeleted,
+    ClassEnded,
     ClassRescheduled,
     Attendance
     }

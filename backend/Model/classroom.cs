@@ -1,3 +1,4 @@
+using backend.Model;
 using Model;
 
 namespace model;
@@ -11,5 +12,8 @@ public class Classroom
     public string GradeLevel { get; set; }
 
     public string Section { get; set; }
+    public ICollection<Classes> Classes { get; set; } = new List<Classes>();
 
+    public ICollection<ClassroomStudents> ClassroomStudents { get; set; }
+        = new List<ClassroomStudents>();
 }

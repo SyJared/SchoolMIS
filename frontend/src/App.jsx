@@ -11,6 +11,7 @@ import StudentPage from "./studentPage/studentPage";
 import StudentProfile from "./student/studentProfile";
 import TeacherDashboard from "./dashboards/teacherDashboard";
 import StudentDashboard from "./dashboards/studentDashboard";
+import StudentClassroomDetails from "./studentPage/studentClassroomDetails";
 function App() {
     const { user } = useAuth();
 
@@ -29,6 +30,7 @@ function App() {
                       {user?.role === "Student" && (<>
                       <Route path={`/studentClassroom`} element={<StudentPage />} />
                       <Route path={'/studentProfile/:studentId'} element={<StudentProfile />} />
+                      <Route path={'/studentClassroomDetails/:classroomId'} element={<StudentClassroomDetails/> } />
                   </>)}
                  
               </Routes>
