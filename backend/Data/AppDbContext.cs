@@ -23,6 +23,7 @@ namespace backend.Data
         public DbSet<Grade> Grades { get; set; }
 
         public DbSet<Notification> Notifications { get; set; }
+        public DbSet<Assignments> Assignments { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -38,6 +39,10 @@ namespace backend.Data
 
             modelBuilder.Entity<Classes>()
                 .Property(c => c.End)
+                .HasColumnType("timestamp without time zone");
+
+            modelBuilder.Entity<AssignmemtSubmission>()
+                .Property(c => c.SubmittedAt)
                 .HasColumnType("timestamp without time zone");
 
             base.OnModelCreating(modelBuilder);

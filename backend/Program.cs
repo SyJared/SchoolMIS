@@ -59,13 +59,10 @@ builder.Services.AddScoped<AttendanceService>();
 builder.Services.AddScoped<IGradeService, GradeService>();
 builder.Services.AddScoped<NotificationService>();
 builder.Services.AddHostedService<ClassStatusBackgroundService>();
+builder.Services.AddScoped<AssignmentService>();
 
 var app = builder.Build();
 app.UseHttpsRedirection();
-app.UseCors("ReactPolicy");
-app.UseAuthentication();
-app.UseAuthorization();
-app.MapControllers();
 app.UseStaticFiles();
 
 app.UseStaticFiles(new StaticFileOptions
@@ -74,6 +71,11 @@ app.UseStaticFiles(new StaticFileOptions
         Path.Combine(builder.Environment.ContentRootPath, "uploads")),
     RequestPath = "/uploads"
 });
+app.UseCors("ReactPolicy");
+app.UseAuthentication();
+app.UseAuthorization();
+app.MapControllers();
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

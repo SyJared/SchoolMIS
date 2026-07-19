@@ -28,7 +28,7 @@ function Classroom() {
         const timer = setTimeout(async () => {
             try {
                 const res = await searchTeacher(search);
-                console.log(res)
+               
                 setSearchedAdvisor(res.data)
             } catch (err) {
                 console.log(err)
@@ -62,7 +62,7 @@ function Classroom() {
     const handleSubmit = async (e) => {
         e.preventDefault()
         try {
-            console.log(classroomForm)
+            
             const res = await createClassroom(classroomForm)
             setCreateClassroomMessage(res.data.message)
         } catch (err) {

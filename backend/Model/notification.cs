@@ -15,5 +15,6 @@ public enum NotificationType{
     ClassDeleted,
     ClassEnded,
     ClassRescheduled,
-    Attendance
+    Attendance,
+    AssignmentCreated
     }
