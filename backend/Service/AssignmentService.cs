@@ -85,4 +85,68 @@ public class AssignmentService
             ))
             .ToListAsync();
     }
+
+    public async Task<bool> UpdateAssignment(UpdateAssignmentDto dto)
+    {
+        var assignment = await _context.Assignments
+            .FirstOrDefaultAsync(a => a.Id == dto.Id);
+
+        if (assignment == null)
+            return false;
+
+        assignment.Title = dto.Title;
+        assignment.Description = dto.Description;
+        assignment.DueDate = dto.DueDate;
+
+        if (dto.File != null)
+        {
+            var uploads = Path.Combine(
+                Directory.GetCurrentDirectory(),
+                "uploads",
+                "assignments");
+
+            Directory.CreateDirectory(uploads);
+
+            // Delete old file (optional but recommended)
+            if (!string.IsNullOrEmpty(assignment.File))
+            {
+                var oldFile = Path.Combine(
+                    Directory.GetCurrentDirectory(),
+                    assignment.File);
+
+                if (File.Exists(oldFile))
+                    File.Delete(oldFile);
+            }
+
+            var fileName = $"{Guid.NewGuid()}{Path.GetExtension(dto.File.FileName)}";
+            var fullPath = Path.Combine(uploads, fileName);
+
+            using var stream = new FileStream(fullPath, FileMode.Create);
+            await dto.File.CopyToAsync(stream);
+
+            assignment.File = $"uploads/assignments/{fileName}";
+        }
+
+        await _context.SaveChangesAsync();
+
+        return true;
+    }
+
+    public async Task DeleteAssignment(int assignmentId)
+    {
+        var assignment = await _context.Assignments.FirstOrDefaultAsync(c => c.Id == assignmentId);
+        if (!string.IsNullOrEmpty(assignment.File))
+        {
+            var path = Path.Combine(
+                Directory.GetCurrentDirectory(),
+                assignment.File);
+
+            if (File.Exists(path))
+                File.Delete(path);
+        }
+
+        _context.Remove(assignment);
+
+        await _context.SaveChangesAsync();
+    }
 }

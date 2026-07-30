@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { getStudentClassroomDetails } from '../api/classroomApi'
 import { BookOpen, User, CalendarClock, CheckCircle2, XCircle, Clock, CalendarDays } from 'lucide-react'
+import StudentAssignment from './studentAssignment'
 
 function StudentClassroomDetails() {
     const { classroomId } = useParams()
@@ -156,6 +157,7 @@ function StudentClassroomDetails() {
                     </ul>
                 )}
             </div>
+            <StudentAssignment classroomId={classroomId} />
         </div>
     )
 }

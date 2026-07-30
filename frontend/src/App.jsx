@@ -12,6 +12,8 @@ import StudentProfile from "./student/studentProfile";
 import TeacherDashboard from "./dashboards/teacherDashboard";
 import StudentDashboard from "./dashboards/studentDashboard";
 import StudentClassroomDetails from "./studentPage/studentClassroomDetails";
+import QuizAttempts from "./quiz/QuizAttempts";
+import QuizDetails from "./quiz/QuizDetails";
 function App() {
     const { user } = useAuth();
 
@@ -27,6 +29,8 @@ function App() {
                   <Route path="/classroom/:ClassroomId" element={<ClassroomDetails />} />
                   <Route path="/teacherDashboard" element={<TeacherDashboard />} />
                   <Route path="/studentDashboard" element={<StudentDashboard />} />
+                  <Route path="/quiz/:quizId" element={<QuizDetails />} />
+                  <Route path="/quiz/:quizId/attempts" element={<QuizAttempts />} />
                       {user?.role === "Student" && (<>
                       <Route path={`/studentClassroom`} element={<StudentPage />} />
                       <Route path={'/studentProfile/:studentId'} element={<StudentProfile />} />

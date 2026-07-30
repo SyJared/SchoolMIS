@@ -6,6 +6,9 @@ import CreateClass from "./createClass";
 import GradingChecklist from "./gradeChecklist";
 import Assignment from "../assignment/assignment";
 import { GraduationCap, User, BookOpen, Users, CalendarPlus, ClipboardCheck } from "lucide-react";
+import Quizzes from "../quiz/quizzes";
+
+
 
 function ClassroomDetails() {
     const { ClassroomId } = useParams();
@@ -91,6 +94,8 @@ function ClassroomDetails() {
 
             {/* Assignments */}
             <Assignment classroomId={ClassroomId} />
+            {/* QUIZES */}
+            <Quizzes classroomId={ClassroomId} />
         </div>
     )
 }

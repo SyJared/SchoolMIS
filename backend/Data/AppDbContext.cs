@@ -1,6 +1,7 @@
 // Data/AppDbContext.cs
 using backend.Model;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using model;
 using Model;
 
@@ -24,7 +25,10 @@ namespace backend.Data
 
         public DbSet<Notification> Notifications { get; set; }
         public DbSet<Assignments> Assignments { get; set; }
-
+        public DbSet<Quiz> Quizzes { get; set; }
+        public DbSet<Question> Question { get; set; }
+        public DbSet<Choice> Choices { get; set; }
+        public DbSet<QuizAttempt> QuizAttempts { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Student>()
@@ -50,6 +54,33 @@ namespace backend.Data
             .HasOne(a => a.Class)
             .WithMany(c => c.Attendances)
             .HasForeignKey(a => a.ClassId);
+
+            var utcConverter = new ValueConverter<DateTime, DateTime>(
+                v => v.Kind == DateTimeKind.Utc ? v : DateTime.SpecifyKind(v, DateTimeKind.Utc),
+                v => DateTime.SpecifyKind(v, DateTimeKind.Utc)
+            );
+
+            var nullableUtcConverter = new ValueConverter<DateTime?, DateTime?>(
+                v => v.HasValue
+                    ? (v.Value.Kind == DateTimeKind.Utc ? v.Value : DateTime.SpecifyKind(v.Value, DateTimeKind.Utc))
+                    : v,
+                v => v.HasValue ? DateTime.SpecifyKind(v.Value, DateTimeKind.Utc) : v
+            );
+
+            foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+            {
+                foreach (var property in entityType.GetProperties())
+                {
+                    if (property.ClrType == typeof(DateTime))
+                    {
+                        property.SetValueConverter(utcConverter);
+                    }
+                    else if (property.ClrType == typeof(DateTime?))
+                    {
+                        property.SetValueConverter(nullableUtcConverter);
+                    }
+                }
+            }
         }
     }
 }

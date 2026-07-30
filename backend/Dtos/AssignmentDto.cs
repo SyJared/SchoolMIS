@@ -20,3 +20,12 @@ public record AssignmentDto(
     DateOnly DueDate,
     string? File
 );
+
+public record UpdateAssignmentDto(
+    int Id,
+    string? Title,
+    string? Description,
+    DateOnly DueDate,
+    IFormFile? File,
+    bool RemoveFile
+);

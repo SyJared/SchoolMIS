@@ -60,6 +60,7 @@ builder.Services.AddScoped<IGradeService, GradeService>();
 builder.Services.AddScoped<NotificationService>();
 builder.Services.AddHostedService<ClassStatusBackgroundService>();
 builder.Services.AddScoped<AssignmentService>();
+builder.Services.AddScoped<QuizService>();
 
 var app = builder.Build();
 app.UseHttpsRedirection();
