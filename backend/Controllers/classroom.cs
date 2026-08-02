@@ -1,6 +1,7 @@
 using Dtos;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using model;
 using System.Security.Claims;
 
 
@@ -70,5 +71,16 @@ namespace backend.Controllers
             return Ok(result);
         }
 
-    }
+
+
+        [HttpGet("mine")]
+        [Authorize(Roles ="Teacher")]
+        public async Task<IActionResult> GetMyClassrooms()
+        {
+            var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+            var result = await _classroomService.GetClassroomsByAdvisor(userId);
+            return Ok(result);
+        }
+
+}
 }

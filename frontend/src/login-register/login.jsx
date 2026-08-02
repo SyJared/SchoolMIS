@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom"
 import { loginUser } from "../api/registerApi";
 import { useAuth } from "../context/authContext";
@@ -10,11 +10,35 @@ function Login() {
     const [error, setError] = useState();
     const [submitting, setSubmitting] = useState(false);
     const navigate = useNavigate();
-    const { login } = useAuth();
+    const { user, login } = useAuth();
 
     const goRegister = () => {
         navigate("/register")
     }
+
+    const goToDashboard = (role) => {
+        switch (role) {
+            case "Admin":
+                navigate("/adminDashboard");
+                break;
+            case "Teacher":
+                navigate("/teacherDashboard");
+                break;
+            case "Student":
+                navigate(`/studentDashboard`);
+                break;
+            default:
+                navigate("/");
+                break;
+        }
+    };
+
+    // if already logged in (e.g. token persisted from a previous session), skip the login form
+    useEffect(() => {
+        if (user) {
+            goToDashboard(user.role);
+        }
+    }, [user]);
 
     const handleLogin = async (e) => {
         e.preventDefault();
@@ -27,27 +51,16 @@ function Login() {
                 Password: password
             });
             login(res.data.token);
-
-            switch (res.data.role) {
-                case "Admin":
-                    navigate("/classroom");
-                    break;
-                case "Teacher":
-                    navigate("/classroom");
-                    break;
-                case "Student":
-                    navigate(`/studentClassroom`);
-                    break;
-                default:
-                    navigate("/");
-                    break;
-            }
+            goToDashboard(res.data.role);
         } catch (err) {
             setError(err.response?.data?.message ?? "Login failed");
         } finally {
             setSubmitting(false);
         }
     };
+
+    // avoid flashing the login form while we check/redirect an already-logged-in user
+    if (user) return null;
 
     return (
         <div className="min-h-screen bg-gray-50 flex items-center justify-center p-6">

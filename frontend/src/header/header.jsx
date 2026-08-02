@@ -41,8 +41,14 @@ function Header() {
                         Dashboard
                     </span>
 
-                    {(user.role === "Admin" || user.role === "Teacher") && (
+                    {(user.role === "Admin" ) && (
                         <span onClick={() => navigate("/classroom")} className={navLinkClass("/classroom")}>
+                            <School size={16} />
+                            Classroom
+                        </span>
+                    )}
+                    {( user.role === "Teacher") && (
+                        <span onClick={() => navigate("/teacherClassroom")} className={navLinkClass("/teacherClassroom")}>
                             <School size={16} />
                             Classroom
                         </span>
@@ -55,8 +61,14 @@ function Header() {
                         </span>
                     )}
 
-                    {(user.role === "Admin" || user.role === "Teacher") && (
+                    {(user.role === "Admin" ) && (
                         <span onClick={() => navigate("/students")} className={navLinkClass("/students")}>
+                            <Users size={16} />
+                            Students
+                        </span>
+                    )}
+                    {( user.role === "Teacher") && (
+                        <span onClick={() => navigate("/teacherStudents")} className={navLinkClass("/teacherStudents")}>
                             <Users size={16} />
                             Students
                         </span>

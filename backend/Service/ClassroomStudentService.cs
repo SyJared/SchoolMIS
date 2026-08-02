@@ -60,4 +60,23 @@ public class ClassroomStudentService
             ))
             .ToListAsync();
     }
+    public async Task<List<TeacherStudentDto>> GetStudentsByAdvisor(int userId)
+    {
+        return await _context.ClassroomsStudents
+            .Include(cs => cs.Student)
+            .Include(cs => cs.Classroom)
+            .Where(cs => cs.Classroom.AdvisorId == userId)
+            .OrderBy(cs => cs.Classroom.GradeLevel)
+            .ThenBy(cs => cs.Classroom.Section)
+            .ThenBy(cs => cs.Student.Name)
+            .Select(cs => new TeacherStudentDto(
+                cs.Student.Id,
+                cs.Student.Name,
+                cs.Classroom.Id,
+                cs.Classroom.Subject,
+                cs.Classroom.GradeLevel,
+                cs.Classroom.Section
+            ))
+            .ToListAsync();
+    }
 }

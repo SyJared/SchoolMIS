@@ -54,5 +54,13 @@ namespace backend.Controllers
 
             return Ok(classrooms);
         }
+        [HttpGet("mine")]
+        [Authorize(Roles ="Teacher")]
+        public async Task<IActionResult> GetMyStudents()
+        {
+            var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+            var result = await _classroomStudentService.GetStudentsByAdvisor(userId);
+            return Ok(result);
+        }
     }
 }

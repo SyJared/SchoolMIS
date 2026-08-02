@@ -17,6 +17,8 @@ import QuizDetails from "./quiz/QuizDetails";
 import TakeQuiz from "./studentPage/quiz/takeQuiz";
 import QuizResult from "./studentPage/quiz/quizResult";
 import AdminDashboard from "./admin/adminDashboard";
+import TeacherClassroom from "./classroom/teacherClassroom";
+import TeacherStudents from "./student/teacherStudent";
 
 // Wrapper that only renders children if user.role is in allowedRoles
 function ProtectedRoute({ allowedRoles, children }) {
@@ -44,8 +46,16 @@ function App() {
                     <Route
                         path="/classroom"
                         element={
-                            <ProtectedRoute allowedRoles={["Admin", "Teacher"]}>
+                            <ProtectedRoute allowedRoles={["Admin"]}>
                                 <Classroom />
+                            </ProtectedRoute>
+                        }
+                    />
+                    <Route
+                        path="/teacherClassroom"
+                        element={
+                            <ProtectedRoute allowedRoles={["Teacher"]}>
+                                <TeacherClassroom />
                             </ProtectedRoute>
                         }
                     />
@@ -60,8 +70,16 @@ function App() {
                     <Route
                         path="/students"
                         element={
-                            <ProtectedRoute allowedRoles={["Admin", "Teacher"]}>
+                            <ProtectedRoute allowedRoles={["Admin"]}>
                                 <Student />
+                            </ProtectedRoute>
+                        }
+                    />
+                    <Route
+                        path="/teacherStudents"
+                        element={
+                            <ProtectedRoute allowedRoles={["Teacher"]}>
+                                <TeacherStudents />
                             </ProtectedRoute>
                         }
                     />

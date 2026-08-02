@@ -108,5 +108,20 @@ public class ClassroomService
             ))
             .FirstOrDefaultAsync();
     }
+    public async Task<List<ClassroomDto>> GetClassroomsByAdvisor(int userId)
+    {
+        return await _context.Classrooms
+            .Include(c => c.Advisor)
+            .Where(c => c.AdvisorId == userId)
+            .OrderBy(c => c.GradeLevel)
+            .ThenBy(c => c.Section)
+            .Select(c => new ClassroomDto(
+                c.Id,
+                c.Subject,
+                c.GradeLevel,
+                c.Section
+            ))
+            .ToListAsync();
+    }
 
 }

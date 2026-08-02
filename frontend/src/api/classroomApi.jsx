@@ -7,4 +7,6 @@ export const getClassroom = () => api.get("/classroom");
 export const getClassroomById = (ClassroomId) => api.get(`/classroom/${ClassroomId}`)
 export const deleteClassroom = (ClassroomId) => api.delete(`/classroom/${ClassroomId}`)
 
-export const getStudentClassroomDetails = (classroomId)=> api.get(`/classroom/student/${classroomId}`)
+export const getStudentClassroomDetails = (classroomId) => api.get(`/classroom/student/${classroomId}`)
+
+export const getMyClassrooms = () => api.get("/classroom/mine");
