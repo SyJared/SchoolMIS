@@ -4,7 +4,7 @@ import CreateQuiz from "./CreateQuiz";
 import { useEffect } from "react";
 import { getQuizzesByClassroom } from "../api/quizApi";
 import { ClipboardList, BarChart3, Plus } from "lucide-react";
-
+import { togglePublish } from "../api/quizApi";
 function Quizzes({ classroomId }) {
     const [quizzes, setQuizzes] = useState([]);
     const [showCreate, setShowCreate] = useState(false);
@@ -19,6 +19,16 @@ function Quizzes({ classroomId }) {
         fetchQuizzes();
     }, [classroomId]);
 
+    const handleTogglePublish = async (e, quiz) => {
+        e.stopPropagation(); // don't trigger the row's onClick navigation
+        try {
+            await togglePublish(quiz.id, !quiz.published);
+            fetchQuizzes(); // refresh list to show new status
+        } catch (err) {
+            console.log(err);
+            alert("Failed to update publish status");
+        }
+    };
     return (
         <div className="max-w-3xl mx-auto p-6 space-y-6">
             <div className="flex items-center justify-between">
@@ -56,8 +66,13 @@ function Quizzes({ classroomId }) {
                                     {q.questionCount} questions &middot; {q.timeLimitMinutes} min
                                 </p>
                             </div>
-                            <span className={`text-xs font-medium px-2.5 py-1 rounded-full border ${q.published ? "bg-green-50 text-green-700 border-green-200" : "bg-gray-50 text-gray-500 border-gray-200"
-                                }`}>
+                            <span
+                                onClick={(e) => handleTogglePublish(e, q)}
+                                className={`text-xs font-medium px-2.5 py-1 rounded-full border cursor-pointer transition-colors ${q.published
+                                        ? "bg-green-50 text-green-700 border-green-200 hover:bg-green-100"
+                                        : "bg-gray-50 text-gray-500 border-gray-200 hover:bg-gray-100"
+                                    }`}
+                            >
                                 {q.published ? "Published" : "Draft"}
                             </span>
                         </li>

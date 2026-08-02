@@ -69,4 +69,34 @@ namespace backend.Dtos
     );
 
     public record ChoiceDto(int Id, string Text, bool IsCorrect);
+    public record SubmitAnswerDto(int QuestionId, int? ChoiceId, string? AnswerText);
+
+    public record SubmitQuizAttemptDto(
+        int QuizId,
+        
+        DateTime StartedAt,
+        List<SubmitAnswerDto> Answers
+    );
+
+    public record QuizAttemptResultDto(int AttemptId, double Score, double MaxScore);
+    public record AnswerResultDto(
+    int QuestionId,
+    string QuestionText,
+    QuestionType Type,
+    int Points,
+    double EarnedPoints,
+    bool IsCorrect,
+    string? SelectedChoiceText,
+    string? CorrectChoiceText,
+    string? AnswerText // for ShortAnswer/Essay
+);
+
+    public record AttemptResultDetailDto(
+        int AttemptId,
+        string QuizTitle,
+        double Score,
+        double MaxScore,
+        DateTime SubmittedAt,
+        List<AnswerResultDto> Answers
+    );
 }

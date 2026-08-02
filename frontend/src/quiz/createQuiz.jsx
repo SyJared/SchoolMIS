@@ -4,7 +4,7 @@ import { Plus, Trash2, ClipboardList } from "lucide-react";
 
 
 const QUESTION_TYPES = ["MultipleChoice", "TrueFalse", "ShortAnswer", "Essay"];
-
+const toUtcIso = (localDateTimeStr) => new Date(localDateTimeStr).toISOString();
 function emptyChoice() {
     return { text: "", isCorrect: false };
 }
@@ -88,8 +88,8 @@ function CreateQuiz({ classroomId, onCreated }) {
         const payload = {
             Title: title,
             Description: description,
-            StartDate: startDate,
-            EndDate: endDate,
+            StartDate: toUtcIso(startDate),   // was: startDate
+            EndDate: toUtcIso(endDate),
             TimeLimitMinutes: Number(timeLimitMinutes),
             ShuffleQuestions: shuffleQuestions,
             ShuffleChoices: shuffleChoices,

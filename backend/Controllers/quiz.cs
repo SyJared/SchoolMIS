@@ -1,6 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using backend.Dtos;
+﻿using backend.Dtos;
 using backend.Services;
+using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace backend.Controllers
 {
@@ -47,6 +48,40 @@ namespace backend.Controllers
         public async Task<IActionResult> GetQuizById(int quizId)
         {
             var result = await _quizService.GetQuizById(quizId);
+            if (result == null) return NotFound();
+            return Ok(result);
+        }
+        [HttpGet("classroom/{classroomId}/published")]
+        public async Task<IActionResult> GetPublishedQuizzesByClassroom(int classroomId)
+        {
+            var result = await _quizService.GetPublishedQuizzesByClassroom(classroomId);
+            return Ok(result);
+        }
+
+        [HttpGet("{quizId}/attempted")]
+        public async Task<IActionResult> GetExistingAttempt(int quizId)
+        {
+            var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+            var attempt = await _quizService.GetExistingAttempt(quizId, userId);
+
+            return Ok(new { attempted = attempt != null, attemptId = attempt?.Id });
+        }
+
+        [HttpPost("attempt")]
+        public async Task<IActionResult> SubmitQuizAttempt([FromBody] SubmitQuizAttemptDto dto)
+        {
+            var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+            var result = await _quizService.SubmitQuizAttempt(dto, userId);
+
+            if (result == null)
+                return BadRequest(new { message = "Unable to submit — quiz not found, student not found, or already attempted." });
+
+            return Ok(result);
+        }
+        [HttpGet("attempt/{attemptId}/result")]
+        public async Task<IActionResult> GetAttemptResult(int attemptId)
+        {
+            var result = await _quizService.GetAttemptResult(attemptId);
             if (result == null) return NotFound();
             return Ok(result);
         }
