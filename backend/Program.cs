@@ -61,6 +61,7 @@ builder.Services.AddScoped<NotificationService>();
 builder.Services.AddHostedService<ClassStatusBackgroundService>();
 builder.Services.AddScoped<AssignmentService>();
 builder.Services.AddScoped<QuizService>();
+builder.Services.AddScoped<AdminDashboardService>();
 
 var app = builder.Build();
 app.UseHttpsRedirection();
